@@ -14,20 +14,35 @@ function createUserDiv(user) {
     usersDiv.appendChild(userDiv)
 }
 
+// function getUsers() {
+//     let request = new XMLHttpRequest()
+//     request.open("GET", "https://jsonplaceholder.typicode.com/users")
+//     request.send()
+//     request.onload = function () {
+//         if (request.status == 200) {
+//             let dataRespons = JSON.parse(request.response)
+//             for (user of dataRespons) {
+//                 createUserDiv(user)
+//             }
+//         } else {
+//             alert("Can't get the all users")
+//         }
+//     }
+// }
+
 function getUsers() {
-    let request = new XMLHttpRequest()
-    request.open("GET", "https://jsonplaceholder.typicode.com/users")
-    request.send()
-    request.onload = function () {
-        if (request.status == 200) {
-            let dataRespons = JSON.parse(request.response)
-            for (user of dataRespons) {
-                createUserDiv(user)
-            }
-        } else {
-            alert("Can't get the all users")
+    fetch("https://jsonplaceholder.typicode.com/users")
+    .then(users => {
+        return users.json()
+    })
+    .then(users => {
+        for (user of users){
+            createUserDiv(user)
         }
-    }
+    })
+    .catch((error) =>{
+        console.log("Fetch error:", error);
+    })
 }
 
 function createPostDiv(post){
@@ -45,22 +60,36 @@ function createPostDiv(post){
     postDiv.appendChild(pragraph)
 } 
 
+// function getPostsByuserId(userId){
+//     let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
+//     let request = new XMLHttpRequest()
+//     request.open("GET",url)
+//     request.send()
+//     request.onload = function(){
+//         if(request.status==200){
+//             let response = JSON.parse(request.response)
+//             for (post of response){
+//                 console.log(post)
+//                 createPostDiv(post)
+//             } 
+//         }else{
+//             alert("Can't get the all users")
+//         }
+//     }
+// }
+
 function getPostsByuserId(userId){
     let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
-    let request = new XMLHttpRequest()
-    request.open("GET",url)
-    request.send()
-    request.onload = function(){
-        if(request.status==200){
-            let response = JSON.parse(request.response)
-            for (post of response){
-                console.log(post)
-                createPostDiv(post)
-            } 
-        }else{
-            alert("Can't get the all users")
+    fetch(url)
+    .then((posts)=>{
+        return posts.json()
+    }).then((posts)=>{
+        for (post of posts){
+            createPostDiv(post)
         }
-    }
+    }).catch((error)=>{
+        console.log("Fetch error:", error);
+    })
 }
 
 function clearPostsArea(){
