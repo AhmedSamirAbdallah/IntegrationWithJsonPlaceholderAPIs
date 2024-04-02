@@ -32,20 +32,20 @@ function createUserDiv(user) {
 
 function getUsers() {
     fetch("https://jsonplaceholder.typicode.com/users")
-    .then(users => {
-        return users.json()
-    })
-    .then(users => {
-        for (user of users){
-            createUserDiv(user)
-        }
-    })
-    .catch((error) =>{
-        console.log("Fetch error:", error);
-    })
+        .then(response => {
+            if (response.ok) return response.json()
+        })
+        .then(users => {
+            for (user of users) {
+                createUserDiv(user)
+            }
+        })
+        .catch((error) => {
+            console.log("Fetch error:", error);
+        })
 }
 
-function createPostDiv(post){
+function createPostDiv(post) {
     let postsDiv = document.getElementById("posts")
     let postDiv = document.createElement("div")
     postsDiv.appendChild(postDiv)
@@ -58,7 +58,7 @@ function createPostDiv(post){
     let pragraphContent = document.createTextNode(post.body)
     pragraph.appendChild(pragraphContent)
     postDiv.appendChild(pragraph)
-} 
+}
 
 // function getPostsByuserId(userId){
 //     let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
@@ -78,35 +78,41 @@ function createPostDiv(post){
 //     }
 // }
 
-function getPostsByuserId(userId){
+function getPostsByuserId(userId) {
     let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
     fetch(url)
-    .then((posts)=>{
-        return posts.json()
-    }).then((posts)=>{
-        for (post of posts){
-            createPostDiv(post)
+        .then((response) => {
+            if (response.ok) return response.json()
+        }).then((posts) => {
+            for (post of posts) {
+                createPostDiv(post)
+            }
+        }).catch((error) => {
+            console.log("Fetch error:", error);
+        })
+}
+
+function clearPostsArea() {
+    document.getElementById("posts").innerHTML = ""
+}
+
+new Promise((resolve, reject) => {
+    getUsers()
+    resolve()
+}).then(() => {
+    let usersDiv = document.getElementById("users")
+    usersDiv.addEventListener("click", function (event) {
+        let userElement = event.target.closest(".user-content")
+        if (userElement) {
+            let userElements = document.querySelectorAll(".selected")
+            userElements.forEach(user => {
+                user.classList.remove("selected")
+            });
+            document.getElementById(userElement.id).classList.add("selected")
+            clearPostsArea()
+            getPostsByuserId(userElement.id)
         }
-    }).catch((error)=>{
-        console.log("Fetch error:", error);
     })
-}
-
-function clearPostsArea(){
-    document.getElementById("posts").innerHTML=""
-}
-
-getUsers();
-let usersDiv = document.getElementById("users")
-usersDiv.addEventListener("click", function(event){
-    let userElement = event.target.closest(".user-content")
-    if (userElement){
-        let userElements = document.querySelectorAll(".selected")
-        userElements.forEach(user => {
-            user.classList.remove("selected")
-        });
-        document.getElementById(userElement.id).classList.add("selected")
-        clearPostsArea()
-        getPostsByuserId(userElement.id)
-    }
+}).catch(()=>{
+    alert("Erorr during fetch")
 })
