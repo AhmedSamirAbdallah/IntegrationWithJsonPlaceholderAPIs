@@ -14,23 +14,23 @@ function createUserDiv(user) {
     usersDiv.appendChild(userDiv)
 }
 
-// function getUsers() {
-//     let request = new XMLHttpRequest()
-//     request.open("GET", "https://jsonplaceholder.typicode.com/users")
-//     request.send()
-//     request.onload = function () {
-//         if (request.status == 200) {
-//             let dataRespons = JSON.parse(request.response)
-//             for (user of dataRespons) {
-//                 createUserDiv(user)
-//             }
-//         } else {
-//             alert("Can't get the all users")
-//         }
-//     }
-// }
+function getUsersUsingXMLHttpRequest() {
+    let request = new XMLHttpRequest()
+    request.open("GET", "https://jsonplaceholder.typicode.com/users")
+    request.send()
+    request.onload = function () {
+        if (request.status == 200) {
+            let dataRespons = JSON.parse(request.response)
+            for (user of dataRespons) {
+                createUserDiv(user)
+            }
+        } else {
+            alert("Can't get the all users")
+        }
+    }
+}
 
-function getUsers() {
+function getUsersUsingFetch() {
     fetch("https://jsonplaceholder.typicode.com/users")
         .then(response => {
             if (response.ok) return response.json()
@@ -41,8 +41,21 @@ function getUsers() {
             }
         })
         .catch((error) => {
-            console.log("Fetch error:", error);
+            alert("Fetch error:", error);
         })
+}
+
+
+function getUserUsingAxios(){
+    axios.get("https://jsonplaceholder.typicode.com/users")
+    .then((response)=>{
+        let users = response.data
+        for (user of users) {
+            createUserDiv(user)
+        }
+    }).catch((error)=>{
+        alert(error)
+    })
 }
 
 function createPostDiv(post) {
@@ -60,25 +73,25 @@ function createPostDiv(post) {
     postDiv.appendChild(pragraph)
 }
 
-// function getPostsByuserId(userId){
-//     let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
-//     let request = new XMLHttpRequest()
-//     request.open("GET",url)
-//     request.send()
-//     request.onload = function(){
-//         if(request.status==200){
-//             let response = JSON.parse(request.response)
-//             for (post of response){
-//                 console.log(post)
-//                 createPostDiv(post)
-//             } 
-//         }else{
-//             alert("Can't get the all users")
-//         }
-//     }
-// }
+function getPostsByuserIdUsingXMLHttpRequest(userId){
+    let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
+    let request = new XMLHttpRequest()
+    request.open("GET",url)
+    request.send()
+    request.onload = function(){
+        if(request.status==200){
+            let response = JSON.parse(request.response)
+            for (post of response){
+                console.log(post)
+                createPostDiv(post)
+            } 
+        }else{
+            alert("Can't get the all users")
+        }
+    }
+}
 
-function getPostsByuserId(userId) {
+function getPostsByuserIdUsingFetch(userId) {
     let url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
     fetch(url)
         .then((response) => {
@@ -88,8 +101,21 @@ function getPostsByuserId(userId) {
                 createPostDiv(post)
             }
         }).catch((error) => {
-            console.log("Fetch error:", error);
+            alert("Fetch error:", error);
         })
+}
+
+function getPostsByuserIdUsingAxios(userId){
+    let url=`https://jsonplaceholder.typicode.com/posts?userId=${userId}` 
+    axios.get(url)
+    .then((response)=>{
+        let posts = response.data
+        for (post of posts) {
+            createPostDiv(post)
+        }
+    }).catch((error)=>{
+        alert(erro)
+    })
 }
 
 function clearPostsArea() {
@@ -97,7 +123,9 @@ function clearPostsArea() {
 }
 
 new Promise((resolve, reject) => {
-    getUsers()
+    // getUsersUsingXMLHttpRequest
+    // getUsersUsingFetch()
+    getUserUsingAxios()
     resolve()
 }).then(() => {
     let usersDiv = document.getElementById("users")
@@ -110,7 +138,9 @@ new Promise((resolve, reject) => {
             });
             document.getElementById(userElement.id).classList.add("selected")
             clearPostsArea()
-            getPostsByuserId(userElement.id)
+            // getPostsByuserIdUsingXMLHttpRequest(userElement.id)
+            // getPostsByuserIdUsingFetch(userElement.id)
+            getPostsByuserIdUsingAxios(userElement.id)
         }
     })
 }).catch(()=>{
